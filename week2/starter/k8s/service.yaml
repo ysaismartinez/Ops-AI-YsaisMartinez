@@ -12,13 +12,13 @@ metadata:
     app: demand-api
 
 spec:
-  type: TODO
+  type: LoadBalancer
 
   selector:
-    app: TODO
+    app: demand-api
 
   ports:
   - name: http
-    port: TODO
-    targetPort: TODO
+    port: 80
+    targetPort: 8000
     protocol: TCP

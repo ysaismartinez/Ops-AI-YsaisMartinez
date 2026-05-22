@@ -11,7 +11,7 @@ import json
 import requests
 from functools import lru_cache
 
-_ROOT = Path(__file__).parent.parent.parent
+_ROOT = Path("/")
 DATA_PATH = _ROOT / "data" / "processed" / "demand_enriched.parquet"
 LOOKUP_PATH = _ROOT / "metadata" / "Lookups" / "taxi_zone_lookup.csv"
 MODEL_PATH = _ROOT / "data" / "processed" / "lgbm_demand_model.txt"
@@ -185,7 +185,10 @@ def _load_full_demand():
 
 
 _profile, _zones_df = _load()
-_zone_map = _zones_df.set_index("zone_id").to_dict("index")
+print("[DEBUG] _zones_df columns:", _zones_df.columns.tolist())
+print("[DEBUG] _zones_df head:", _zones_df.head().to_dict("records"))
+zone_key = "zone_id" if "zone_id" in _zones_df.columns else "LocationID"
+_zone_map = _zones_df.set_index(zone_key).to_dict("index")
 _lgbm_model = _load_model()
 _full_demand = _load_full_demand() if _lgbm_model else None
 

@@ -5,11 +5,5 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: demand-api-config
-  labels:
-    app: demand-api
-
 data:
-  # GCS bucket containing the model and data files
-  # MUST match the bucket you created in Part 0 (without gs://)
-  # Example: "ops-ai-alice-data" (replace [YOUR-NAME] with your actual suffix)
-  GCS_BUCKET: "ops-ai-[YOUR-NAME]-data"
+  GCS_BUCKET: "ops-ai-ysais-martinez-data" 

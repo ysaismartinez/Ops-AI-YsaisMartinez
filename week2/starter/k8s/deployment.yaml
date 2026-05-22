@@ -6,13 +6,13 @@ metadata:
     app: demand-api
 
 spec:
-  replicas: TODO
+  replicas: 2
 
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: TODO
-      maxUnavailable: TODO
+      maxSurge: 1
+      maxUnavailable: 1
 
   selector:
     matchLabels:
@@ -25,8 +25,6 @@ spec:
     spec:
       # Authentication for pulling images from Artifact Registry
       # You must create this secret (see README Part 2)
-      imagePullSecrets:
-      - name: artifact-registry-secret
 
       initContainers:
       - name: download-data
@@ -56,37 +54,41 @@ spec:
 
       containers:
       - name: demand-api
-        image: us-central1-docker.pkg.dev/ops-ai-[YOUR-NAME]/docker-repo/demand-api:latest
-        imagePullPolicy: TODO
+        image: us-central1-docker.pkg.dev/ops-ai-ysais-martinez/docker-repo/demand-api:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
+
         env:
         - name: GCS_BUCKET
           valueFrom:
             configMapKeyRef:
               name: demand-api-config
               key: GCS_BUCKET
+
         resources:
           requests:
-            cpu: TODO
-            memory: TODO
+            cpu: 512m
+            memory: 1Gi
           limits:
-            cpu: TODO
-            memory: TODO
+            cpu: 1000m
+            memory: 3Gi
+
         readinessProbe:
           httpGet:
             path: /health
             port: 8000
-          initialDelaySeconds: TODO
-          periodSeconds: TODO
-          failureThreshold: TODO
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 3
+
         livenessProbe:
           httpGet:
             path: /health
             port: 8000
-          initialDelaySeconds: TODO
-          periodSeconds: TODO
-          failureThreshold: TODO
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 3
 
         volumeMounts:
         - name: data
@@ -96,6 +98,7 @@ spec:
       volumes:
       - name: data
         emptyDir: {}
+
       - name: gcs-sa-key
         secret:
-          secretName: gcs-sa-key  # Created in Part 2 Step 1b (see README)
+          secretName: gcs-sa-key
