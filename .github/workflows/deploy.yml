@@ -48,6 +48,12 @@ jobs:
           --zone $ZONE \
           --project $PROJECT_ID
 
+    - name: Create GCS service account secret
+      run: |
+        echo '${{ secrets.GCP_SA_KEY }}' > key.json
+        kubectl delete secret gcs-sa-key --ignore-not-found
+        kubectl create secret generic gcs-sa-key --from-file=key.json=key.json
+        
     - name: Deploy to GKE
       run: |
         kubectl apply -f week2/starter/k8s/configmap.yaml
